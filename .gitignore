@@ -1,8 +1,21 @@
-HELP.md
+### Maven ###
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+### Logs ###
+logs/
+*.log
+
+### Environment variables ###
+.env
+.env.*
+!.env.example
+
+### OS ###
+.DS_Store
+Thumbs.db
 
 ### STS ###
 .apt_generated
@@ -14,7 +27,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr

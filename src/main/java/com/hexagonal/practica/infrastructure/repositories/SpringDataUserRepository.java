@@ -10,5 +10,5 @@ import com.hexagonal.practica.infrastructure.adapters.out.persistence.entities.U
 public interface SpringDataUserRepository extends JpaRepository<UserEntity, UUID>{
     Optional<UserEntity> findByEmail(String email);
 
-    boolean existsByEmail(String emial);
+    boolean existsByEmail(String email);
 }

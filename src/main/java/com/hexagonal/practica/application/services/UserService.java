@@ -54,5 +54,14 @@ public class UserService implements ManageUserUseCase {
     public void deleteById(UUID id) {
         userRepositoryPort.deleteById(id);
     }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepositoryPort.findByEmail(email).orElse(null);
+    }
+
+    
+
+   
     
 }

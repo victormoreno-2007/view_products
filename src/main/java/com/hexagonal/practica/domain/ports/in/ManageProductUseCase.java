@@ -10,6 +10,6 @@ public interface ManageProductUseCase {
     List<Product> findAll();
     List<Product> findByUserId(UUID userId);
     Product findbyID(UUID id);
-    Product update(UUID id, Product product);
-    void deleteById (UUID id);
+    Product update(UUID id, Product product, UUID userId);
+    void deleteById (UUID id, UUID userId);
 }

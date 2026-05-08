@@ -18,6 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hexagonal.practica.domain.model.product.Product;
 import com.hexagonal.practica.domain.ports.in.ManageProductUseCase;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,7 +35,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(
         @AuthenticationPrincipal UUID userId, 
-        @RequestBody ProductRequest request
+        @RequestBody @Valid ProductRequest request
         ){
             Product productInput = Product.reconstruct(
             null, 
@@ -115,7 +120,10 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id){
+    public ResponseEntity<Void> deleteProduct(
+        @PathVariable UUID id,
+        @AuthenticationPrincipal UUID userId
+    ){
         manageProductUseCase.deleteById(id);
 
         return ResponseEntity.noContent().build();
@@ -140,11 +148,17 @@ public class ProductController {
 
 
         public static class ProductRequest {
+            @NotBlank
             private String name;
+
             private String description;
+            @NotNull
+            @Positive
             private BigDecimal price;
+            
             private String imagePath;
 
+            
             public String getName() {
                 return name;
             }

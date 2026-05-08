@@ -41,9 +41,12 @@ public class ProductService implements ManageProductUseCase{
     }
 
     @Override
-    public Product update(UUID id, Product product) {
+    public Product update(UUID id, Product product, UUID userId) {
         Product existProduct = findbyID(id);
 
+        if (!existProduct.getUserId().equals(userId)) {
+            throw new DomainException(BusinessErrorCode.ACCESS_DENEGATE);
+        }
         existProduct.updateInfo(
             product.getName(), 
             product.getDescription(), 
@@ -55,7 +58,12 @@ public class ProductService implements ManageProductUseCase{
     }
 
     @Override
-    public void deleteById(UUID id) {
+    public void deleteById(UUID id, UUID userId) {
+        Product existProduct = findbyID(id);
+
+        if (!existProduct.getUserId().equals(userId)) {
+            throw new DomainException(BusinessErrorCode.ACCESS_DENEGATE);
+        }
         productRepositoryPort.deleteById(id);
     }
     

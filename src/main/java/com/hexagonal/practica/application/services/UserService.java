@@ -42,6 +42,8 @@ public class UserService implements ManageUserUseCase {
     public User update(UUID id, User user) {
         User existUser = findById(id);
 
+        
+
         existUser.updatePersonalInfo(
             user.getFirstName(), 
             user.getLastName());

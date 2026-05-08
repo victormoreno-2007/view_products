@@ -10,6 +10,6 @@ public interface ManageUserUseCase {
     List<User> findAll();
     User findByEmail(String email);
     User findById(UUID id);
-    User update(UUID id, User user, UUID userId);
-    void deleteById(UUID id, UUID userId); 
+    User update(UUID id, User user);
+    void deleteById(UUID id); 
 }

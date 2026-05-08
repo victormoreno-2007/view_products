@@ -96,6 +96,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(
         @PathVariable UUID id,
+        @AuthenticationPrincipal UUID userId, 
         @RequestBody ProductRequest request
     ) {
         Product productUpdateInfo = Product.reconstruct(
@@ -106,7 +107,7 @@ public class ProductController {
             request.getImagePath(), 
             null);
 
-        Product updateProdut = manageProductUseCase.update(id, productUpdateInfo);
+        Product updateProdut = manageProductUseCase.update(id, productUpdateInfo, userId);
 
         ProductResponse response = new ProductResponse(
             updateProdut.getId(), 
@@ -124,7 +125,7 @@ public class ProductController {
         @PathVariable UUID id,
         @AuthenticationPrincipal UUID userId
     ){
-        manageProductUseCase.deleteById(id);
+        manageProductUseCase.deleteById(id, userId);
 
         return ResponseEntity.noContent().build();
     }

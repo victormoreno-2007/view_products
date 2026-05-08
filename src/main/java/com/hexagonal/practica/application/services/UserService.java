@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.hexagonal.practica.domain.exception.BusinessErrorCode;
 import com.hexagonal.practica.domain.exception.DomainException;
 import com.hexagonal.practica.domain.model.user.User;
 import com.hexagonal.practica.domain.ports.in.ManageUserUseCase;
@@ -22,7 +23,7 @@ public class UserService implements ManageUserUseCase {
     @Override
     public User create(User user) {
         if (userRepositoryPort.exist(user.getEmail())) {
-            throw new DomainException("Usuario ya existe con este correo");
+            throw new DomainException(BusinessErrorCode.USER_NOT_FOUND);
         }
         return userRepositoryPort.save(user);
     }
@@ -34,7 +35,7 @@ public class UserService implements ManageUserUseCase {
 
     @Override
     public User findById(UUID id) {
-        return userRepositoryPort.findById(id).orElseThrow(() -> new DomainException("Usuario no encontrado"));
+        return userRepositoryPort.findById(id).orElseThrow(() -> new DomainException(BusinessErrorCode.USER_NOT_FOUND));
     }
 
     @Override

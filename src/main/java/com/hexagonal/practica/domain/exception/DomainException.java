@@ -1,13 +1,22 @@
 package com.hexagonal.practica.domain.exception;
 
 public class DomainException extends RuntimeException{
+
+    private final BusinessErrorCode businessErrorCode;
     
-    public DomainException(String message) {
-        super(message);
+    public DomainException(BusinessErrorCode errorCode) {
+        super(errorCode.getReason());
+        this.businessErrorCode = errorCode;
     }
 
-    public DomainException(String message, Throwable cause) {
-        super(message, cause);
+    public DomainException(BusinessErrorCode errorCode, Throwable cause) {
+        super(errorCode.getReason(), cause);
+        this.businessErrorCode = errorCode;
+    }
+
+        
+    public BusinessErrorCode getBusinessErrorCode() {
+        return businessErrorCode;
     }
 
 }

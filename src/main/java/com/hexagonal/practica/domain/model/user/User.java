@@ -2,6 +2,7 @@ package com.hexagonal.practica.domain.model.user;
 
 import java.util.UUID;
 
+import com.hexagonal.practica.domain.exception.BusinessErrorCode;
 import com.hexagonal.practica.domain.exception.DomainException;
 
 public class User {
@@ -17,10 +18,10 @@ public class User {
 
     public static User create(String email, String password, String firstName, String lastname, Role role){
         if (email == null || !email.contains("@")) {
-            throw new DomainException("Email invalido, por favor verifica");
+            throw new DomainException(BusinessErrorCode.EMAIL_INVELID);
         }
         if (password == null || password.trim().isEmpty()) {
-            throw new DomainException("Error al ingresar la contraseña, por favor verifica");
+            throw new DomainException(BusinessErrorCode.PASSWORD_INVALID);
         }
 
         User user = new User();
@@ -72,11 +73,11 @@ public class User {
 
     public void updatePersonalInfo(String firstName, String lastname){
         if (firstName == null || firstName.trim().isEmpty()) {
-            throw new DomainException("Campo no puede ser vacío");
+            throw new DomainException(BusinessErrorCode.MESSAGE_NOT_EMPTY);
         }
 
         if (lastname == null || lastname.trim().isEmpty()) {
-            throw new DomainException("Campo no puede ser vacío");
+            throw new DomainException(BusinessErrorCode.MESSAGE_NOT_EMPTY);
         }
 
         this.firstName = firstName;
@@ -85,7 +86,7 @@ public class User {
 
     public void changepassword(String newPassword){
         if (newPassword == null || newPassword.trim().isEmpty()) {
-            throw new DomainException("la nueva contraseña debe de tener contenido");
+            throw new DomainException(BusinessErrorCode.MESSAGE_NOT_EMPTY);
         }
     }
 

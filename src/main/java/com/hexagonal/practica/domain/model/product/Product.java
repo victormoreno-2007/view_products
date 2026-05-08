@@ -2,6 +2,8 @@ package com.hexagonal.practica.domain.model.product;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+
+import com.hexagonal.practica.domain.exception.BusinessErrorCode;
 import com.hexagonal.practica.domain.exception.DomainException;
 
 public class Product {
@@ -16,10 +18,10 @@ public class Product {
 
     public static Product create(String name, String description, BigDecimal price, String imagePath, UUID userId) {
         if (name == null || name.trim().isEmpty()) {
-            throw new DomainException("El nombre del producto es obligatorio.");
+            throw new DomainException(BusinessErrorCode.PRODUCT_NOT_FOUND);
         }
         if (userId == null) {
-            throw new DomainException("El producto debe pertenecer a un usuario registrado.");
+            throw new DomainException(BusinessErrorCode.PRODUCT_NOT_FOUND);
         }
         
         Product product = new Product();
@@ -55,7 +57,7 @@ public class Product {
     
     public void updateInfo(String name, String description, BigDecimal price, String newImagePath) {
         if (name == null || name.trim().isEmpty()) {
-            throw new DomainException("El nombre del producto no puede estar vacío.");
+            throw new DomainException(BusinessErrorCode.PRODUCT_NOT_FOUND);
         }
         this.name = name;
         this.description = description;

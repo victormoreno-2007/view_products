@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.hexagonal.practica.domain.exception.BusinessErrorCode;
 import com.hexagonal.practica.domain.exception.DomainException;
 import com.hexagonal.practica.domain.model.product.Product;
 import com.hexagonal.practica.domain.ports.in.ManageProductUseCase;
@@ -36,7 +37,7 @@ public class ProductService implements ManageProductUseCase{
 
     @Override
     public Product findbyID(UUID id) {
-        return productRepositoryPort.findById(id).orElseThrow(() -> new DomainException("Producto no encontrado"));
+        return productRepositoryPort.findById(id).orElseThrow(() -> new DomainException(BusinessErrorCode.PRODUCT_NOT_FOUND));
     }
 
     @Override

@@ -31,7 +31,7 @@ public class ProductService implements ManageProductUseCase{
 
     @Override
     public List<Product> findByUserId(UUID userId) {
-        return productRepositoryPort.findByUserId(userId);        
+        return productRepositoryPort.findByUserId(userId); 
     }
 
     @Override

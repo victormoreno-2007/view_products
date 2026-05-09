@@ -3,6 +3,9 @@ package com.hexagonal.practica.application.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hexagonal.practica.domain.exception.BusinessErrorCode;
@@ -26,8 +29,8 @@ public class ProductService implements ManageProductUseCase{
     }
 
     @Override
-    public List<Product> findAll() {
-        return productRepositoryPort.findAll();
+    public Page<Product> findAll(int page, int size) {
+        return productRepositoryPort.findAll(page, size);
     }
 
     @Override

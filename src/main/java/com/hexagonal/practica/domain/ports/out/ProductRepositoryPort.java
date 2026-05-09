@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.hexagonal.practica.domain.model.product.Product;
 
 public interface ProductRepositoryPort {
@@ -11,6 +14,6 @@ public interface ProductRepositoryPort {
     Product save(Product product);
     Optional<Product> findById(UUID id);
     List<Product> findByUserId(UUID userId);
-    List<Product> findAll();
+    Page<Product> findAll(int page, int size);
     void deleteById(UUID id);
 } 

@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import com.hexagonal.practica.domain.model.product.Product;
@@ -43,10 +45,12 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort{
     }
 
     @Override
-    public List<Product> findAll() {
-        return springDataProductRepository.findAll().stream()
-        .map(productMapper::toDomain)
-        .collect(Collectors.toList());
+    public Page<Product> findAll(int page, int size) {
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        return springDataProductRepository.findAll(pageRequest)
+        .map(productMapper::toDomain);
     }
 
     @Override

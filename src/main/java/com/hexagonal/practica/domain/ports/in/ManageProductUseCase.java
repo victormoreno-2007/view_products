@@ -3,11 +3,13 @@ package com.hexagonal.practica.domain.ports.in;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+
 import com.hexagonal.practica.domain.model.product.Product;
 
 public interface ManageProductUseCase {
     Product create(Product product);
-    List<Product> findAll();
+    Page<Product> findAll(int page, int size);
     List<Product> findByUserId(UUID userId);
     Product findbyID(UUID id);
     Product update(UUID id, Product product, UUID userId);

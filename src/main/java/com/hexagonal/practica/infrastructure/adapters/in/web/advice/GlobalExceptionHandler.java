@@ -56,9 +56,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleGenericException(Exception ex){
         Map<String, String> response = new HashMap<>();
 
-        response.put("message", "Ocurrió un error inesperado, por favor contacte al administrador ");
+        response.put("message", "Ocurrió un error inesperado, por favor contacte al administrador " );
 
         response.put("Error", "Internal Server Error");
+
+        ex.printStackTrace();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }

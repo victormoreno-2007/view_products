@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import com.hexagonal.practica.domain.model.user.Role;
 import com.hexagonal.practica.domain.model.user.User;
 import com.hexagonal.practica.domain.ports.in.ManageUserUseCase;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,17 +30,20 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     
     private final ManageUserUseCase manageUserUseCase;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(
-        @RequestBody UserRequest request
+        @RequestBody @Valid UserRequest request
     ) {
+
+        String contraseñaSegura = passwordEncoder.encode(request.getPassword());
         User userInput =  User.reconstruct(
             null, 
             request.getFirstname(), 
             request.getLastName(), 
             request.getEmail(), 
-            request.getPassword(), 
+            contraseñaSegura, 
             Role.USER
         );
 
@@ -49,7 +54,7 @@ public class UserController {
             createUser.getFirstName(), 
             createUser.getLastName(), 
             createUser.getEmail(), 
-            createUser.getRole() 
+            createUser.getRole()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

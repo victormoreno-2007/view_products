@@ -14,4 +14,6 @@ public interface ManageProductUseCase {
     Product findbyID(UUID id);
     Product update(UUID id, Product product, UUID userId);
     void deleteById (UUID id, UUID userId);
+    Page<Product> findPaginatedByUserId(UUID userId, int page, int size);
+
 }

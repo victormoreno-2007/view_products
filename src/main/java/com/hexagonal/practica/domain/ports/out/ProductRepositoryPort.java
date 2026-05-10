@@ -15,4 +15,5 @@ public interface ProductRepositoryPort {
     List<Product> findByUserId(UUID userId);
     Page<Product> findAll(int page, int size);
     void deleteById(UUID id);
+    Page<Product> findPaginatedByUserId(UUID userId, int page, int size);
 } 

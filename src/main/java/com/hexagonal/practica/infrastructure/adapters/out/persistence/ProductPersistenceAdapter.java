@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -57,5 +58,12 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort{
     public void deleteById(UUID id) {
         springDataProductRepository.deleteById(id);
     }
-    
+
+   @Override
+    public Page<Product> findPaginatedByUserId(UUID userId, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        
+        return springDataProductRepository.findByUserId(userId, pageRequest)
+                .map(productMapper::toDomain);
+    }
 }

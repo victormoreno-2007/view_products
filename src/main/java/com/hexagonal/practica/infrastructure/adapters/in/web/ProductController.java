@@ -151,6 +151,15 @@ public class ProductController {
         return ResponseEntity.ok( responseList);
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Page<Product>> getPublicUserProducts(
+        @PathVariable UUID userId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "0") int size) {
+            Page<Product> productPage = manageProductUseCase.findPaginatedByUserId(userId, page, size);
+            return ResponseEntity.ok(productPage);
+        }
+
 
         public static class ProductRequest {
             @NotBlank

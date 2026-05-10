@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/products/user/**").permitAll()
                 .anyRequest().authenticated() 
             )
             // Agregamos esto para decirle que NO guarde sesiones en memoria (Las APIs REST son Stateless)

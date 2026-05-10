@@ -3,6 +3,7 @@ package com.hexagonal.practica.application.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.springdoc.core.converters.models.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import com.hexagonal.practica.domain.exception.DomainException;
 import com.hexagonal.practica.domain.model.product.Product;
 import com.hexagonal.practica.domain.ports.in.ManageProductUseCase;
 import com.hexagonal.practica.domain.ports.out.ProductRepositoryPort;
+import com.hexagonal.practica.infrastructure.adapters.out.persistence.entities.ProductEntity;
 
 @Service
 public class ProductService implements ManageProductUseCase{
@@ -67,5 +69,13 @@ public class ProductService implements ManageProductUseCase{
         }
         productRepositoryPort.deleteById(id);
     }
+
+    @Override
+    public Page<Product> findPaginatedByUserId(UUID userId, int page, int size) {
+        // El servicio simplemente delega el trabajo al puerto de salida
+        return productRepositoryPort.findPaginatedByUserId(userId, page, size);
+    }
+
+    
     
 }

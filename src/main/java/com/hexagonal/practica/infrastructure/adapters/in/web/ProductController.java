@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hexagonal.practica.domain.model.product.Product;
 import com.hexagonal.practica.domain.ports.in.ManageProductUseCase;
 
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,49 +40,45 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(
-        @AuthenticationPrincipal UUID userId, 
-        @RequestBody @Valid ProductRequest request
-        ){
-            Product productInput = Product.reconstruct(
-            null, 
-            request.getName(),
-            request.getDescription(),
-            request.getPrice(),
-            request.getImagePath(),
-            userId 
-            );
+            @AuthenticationPrincipal UUID userId,
+            @RequestBody @Valid ProductRequest request) {
+        Product productInput = Product.reconstruct(
+                null,
+                request.getName(),
+                request.getDescription(),
+                request.getPrice(),
+                request.getImagePath(),
+                userId);
 
-            Product createProduct = manageProductUseCase.create(productInput);
-            ProductResponse response = new ProductResponse(
-                createProduct.getId(),                
-                createProduct.getName(), 
-                createProduct.getDescription(), 
-                createProduct.getPrice(), 
-                createProduct.getImagePath(), 
-                createProduct.getUserId()
-            );
+        Product createProduct = manageProductUseCase.create(productInput);
+        ProductResponse response = new ProductResponse(
+                createProduct.getId(),
+                createProduct.getName(),
+                createProduct.getDescription(),
+                createProduct.getPrice(),
+                createProduct.getImagePath(),
+                createProduct.getUserId());
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
-            
     }
 
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> getAllProducts(
-        @RequestParam(defaultValue = "1") int page, 
-        @RequestParam(defaultValue = "1")int size){
-        Page<Product>  products = manageProductUseCase.findAll(page, size);
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "1") int size) {
+        Page<Product> products = manageProductUseCase.findAll(page, size);
 
-        Page<ProductResponse> responsePage = products.map( p -> new ProductResponse(
-            null, 
-            p.getName(), 
-            p.getDescription(), 
-            p.getPrice(), 
-            p.getImagePath(), 
-            null));
+        Page<ProductResponse> responsePage = products.map(p -> new ProductResponse(
+                null,
+                p.getName(),
+                p.getDescription(),
+                p.getPrice(),
+                p.getImagePath(),
+                null));
 
         return ResponseEntity.ok(responsePage);
-    
+
     }
 
     @GetMapping("/{id}")
@@ -86,180 +86,255 @@ public class ProductController {
         Product product = manageProductUseCase.findbyID(id);
 
         ProductResponse response = new ProductResponse(
-            product.getId(), 
-            product.getName(), 
-            product.getDescription(), 
-            product.getPrice(), 
-            product.getImagePath(), 
-            product.getUserId());
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getImagePath(),
+                product.getUserId());
 
-            return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(
-        @PathVariable UUID id,
-        @AuthenticationPrincipal UUID userId, 
-        @RequestBody ProductRequest request
-    ) {
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UUID userId,
+            @RequestBody ProductRequest request) {
         Product productUpdateInfo = Product.reconstruct(
-            null, 
-            request.getName(), 
-            request.getDescription(), 
-            request.getPrice(), 
-            request.getImagePath(), 
-            null);
+                null,
+                request.getName(),
+                request.getDescription(),
+                request.getPrice(),
+                request.getImagePath(),
+                null);
 
         Product updateProdut = manageProductUseCase.update(id, productUpdateInfo, userId);
 
         ProductResponse response = new ProductResponse(
-            updateProdut.getId(), 
-            updateProdut.getName(), 
-            updateProdut.getDescription(), 
-            updateProdut.getPrice(), 
-            updateProdut.getImagePath(), 
-            updateProdut.getUserId());
+                updateProdut.getId(),
+                updateProdut.getName(),
+                updateProdut.getDescription(),
+                updateProdut.getPrice(),
+                updateProdut.getImagePath(),
+                updateProdut.getUserId());
 
-            return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(
-        @PathVariable UUID id,
-        @AuthenticationPrincipal UUID userId
-    ){
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UUID userId) {
         manageProductUseCase.deleteById(id, userId);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/my-products")
-    public ResponseEntity<List<ProductResponse>> getMyProducts(@AuthenticationPrincipal UUID userId){
+    public ResponseEntity<List<ProductResponse>> getMyProducts(@AuthenticationPrincipal UUID userId) {
         List<Product> myProducts = manageProductUseCase.findByUserId(userId);
 
         List<ProductResponse> responseList = myProducts.stream()
-        .map(p -> new ProductResponse(
-            p.getId(), 
-            p.getName(), 
-            p.getDescription(), 
-            p.getPrice(), 
-            p.getImagePath(), 
-            p.getUserId()))
-            .toList();
+                .map(p -> new ProductResponse(
+                        p.getId(),
+                        p.getName(),
+                        p.getDescription(),
+                        p.getPrice(),
+                        p.getImagePath(),
+                        p.getUserId()))
+                .toList();
 
-        return ResponseEntity.ok( responseList);
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<Product>> getPublicUserProducts(
-        @PathVariable UUID userId,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "0") int size) {
-            Page<Product> productPage = manageProductUseCase.findPaginatedByUserId(userId, page, size);
-            return ResponseEntity.ok(productPage);
+            @PathVariable UUID userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "0") int size) {
+        Page<Product> productPage = manageProductUseCase.findPaginatedByUserId(userId, page, size);
+        return ResponseEntity.ok(productPage);
+    }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponse> createProduct(
+            @AuthenticationPrincipal UUID userId,
+            @Valid @ModelAttribute ProductFormDataRequest request) {
+        Product productInput = Product.reconstruct(
+                null,
+                request.getName(),
+                request.getDescription(),
+                request.getPrice(),
+                null,
+                userId);
+
+        Product createProduct = manageProductUseCase.create(productInput, request.getImage());
+
+        ProductResponse response = new ProductResponse(
+                createProduct.getId(),
+                createProduct.getName(),
+                createProduct.getDescription(),
+                createProduct.getPrice(),
+                createProduct.getImagePath(),
+                createProduct.getUserId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    public static class ProductFormDataRequest {
+        @NotBlank
+        private String name;
+        private String description;
+        @NotNull
+        @Positive
+        private BigDecimal price;
+        private MultipartFile image;
+
+        public String getName() {
+            return name;
         }
 
+        public void setName(String name) {
+            this.name = name;
+        }
 
-        public static class ProductRequest {
-            @NotBlank
-            private String name;
+        public String getDescription() {
+            return description;
+        }
 
-            private String description;
-            @NotNull
-            @Positive
-            private BigDecimal price;
-            
-            private String imagePath;
+        public void setDescription(String description) {
+            this.description = description;
+        }
 
-            
-            public String getName() {
-                return name;
-            }
-            public void setName(String name) {
-                this.name = name;
-            }
-            public String getDescription() {
-                return description;
-            }
-            public void setDescription(String description) {
-                this.description = description;
-            }
-            public BigDecimal getPrice() {
-                return price;
-            }
-            public void setPrice(BigDecimal price) {
-                this.price = price;
-            }
-            public String getImagePath() {
-                return imagePath;
-            }
-            public void setImagePath(String imagePath) {
-                this.imagePath = imagePath;
-            }
+        public BigDecimal getPrice() {
+            return price;
+        }
+
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
+
+        public MultipartFile getImage() {
+            return image;
+        }
+
+        public void setImage(MultipartFile image) {
+            this.image = image;
+        }
+    }
+
+    public static class ProductRequest {
+        @NotBlank
+        private String name;
+
+        private String description;
+        @NotNull
+        @Positive
+        private BigDecimal price;
+
+        private String imagePath;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public BigDecimal getPrice() {
+            return price;
+        }
+
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
+
+        public String getImagePath() {
+            return imagePath;
+        }
+
+        public void setImagePath(String imagePath) {
+            this.imagePath = imagePath;
+        }
 
     }
-    
-            
 
+    public static class ProductResponse {
+        private UUID id;
+        private String name;
+        private String description;
+        private BigDecimal price;
+        private String imagePath;
+        private UUID userId;
 
-
-        public static class ProductResponse{
-            private UUID id;
-            private String name;
-            private String description;
-            private BigDecimal price;
-            private String imagePath;
-            private UUID userId;
-            public ProductResponse(UUID id, String name, String description, BigDecimal price, String imagePath,
-                    UUID userId) {
-                this.id = id;
-                this.name = name;
-                this.description = description;
-                this.price = price;
-                this.imagePath = imagePath;
-                this.userId = userId;
-            }
-            public UUID getId() {
-                return id;
-            }
-            public void setId(UUID id) {
-                this.id = id;
-            }
-            public String getName() {
-                return name;
-            }
-            public void setName(String name) {
-                this.name = name;
-            }
-            public String getDescription() {
-                return description;
-            }
-            public void setDescription(String description) {
-                this.description = description;
-            }
-            public BigDecimal getPrice() {
-                return price;
-            }
-            public void setPrice(BigDecimal price) {
-                this.price = price;
-            }
-            public String getImagePath() {
-                return imagePath;
-            }
-            public void setImagePath(String imagePath) {
-                this.imagePath = imagePath;
-            }
-            public UUID getUserId() {
-                return userId;
-            }
-            public void setUserId(UUID userId) {
-                this.userId = userId;
-            }
-
-
+        public ProductResponse(UUID id, String name, String description, BigDecimal price, String imagePath,
+                UUID userId) {
+            this.id = id;
+            this.name = name;
+            this.description = description;
+            this.price = price;
+            this.imagePath = imagePath;
+            this.userId = userId;
         }
 
-    
+        public UUID getId() {
+            return id;
+        }
+
+        public void setId(UUID id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public BigDecimal getPrice() {
+            return price;
+        }
+
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
+
+        public String getImagePath() {
+            return imagePath;
+        }
+
+        public void setImagePath(String imagePath) {
+            this.imagePath = imagePath;
+        }
+
+        public UUID getUserId() {
+            return userId;
+        }
+
+        public void setUserId(UUID userId) {
+            this.userId = userId;
+        }
+
+    }
 
 }

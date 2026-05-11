@@ -38,30 +38,6 @@ public class ProductController {
 
     private final ManageProductUseCase manageProductUseCase;
 
-    @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(
-            @AuthenticationPrincipal UUID userId,
-            @RequestBody @Valid ProductRequest request) {
-        Product productInput = Product.reconstruct(
-                null,
-                request.getName(),
-                request.getDescription(),
-                request.getPrice(),
-                request.getImagePath(),
-                userId);
-
-        Product createProduct = manageProductUseCase.create(productInput);
-        ProductResponse response = new ProductResponse(
-                createProduct.getId(),
-                createProduct.getName(),
-                createProduct.getDescription(),
-                createProduct.getPrice(),
-                createProduct.getImagePath(),
-                createProduct.getUserId());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-
-    }
 
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> getAllProducts(

@@ -41,17 +41,17 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> getAllProducts(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "1") int size) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Page<Product> products = manageProductUseCase.findAll(page, size);
 
         Page<ProductResponse> responsePage = products.map(p -> new ProductResponse(
-                null,
+                p.getId(),
                 p.getName(),
                 p.getDescription(),
                 p.getPrice(),
                 p.getImagePath(),
-                null));
+                p.getUserId()));
 
         return ResponseEntity.ok(responsePage);
 
@@ -125,12 +125,20 @@ public class ProductController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<Product>> getPublicUserProducts(
+    public ResponseEntity<Page<ProductResponse>> getPublicUserProducts(
             @PathVariable UUID userId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "0") int size) {
+            @RequestParam(defaultValue = "10") int size) {
         Page<Product> productPage = manageProductUseCase.findPaginatedByUserId(userId, page, size);
-        return ResponseEntity.ok(productPage);
+
+        Page<ProductResponse> responsePage = productPage.map(p -> new ProductResponse(
+            p.getId(), 
+            p.getName(), 
+            p.getDescription(), 
+            p.getPrice(), 
+            p.getImagePath(), 
+            userId));
+            return ResponseEntity.ok(responsePage);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

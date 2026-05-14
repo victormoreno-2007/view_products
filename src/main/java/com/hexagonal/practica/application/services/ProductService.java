@@ -50,7 +50,7 @@ public class ProductService implements ManageProductUseCase{
         Product existProduct = findbyID(id);
 
         if (!existProduct.getUserId().equals(userId)) {
-            throw new DomainException(BusinessErrorCode.ACCESS_DENEGATE);
+            throw new DomainException(BusinessErrorCode.ACCESS_DENIED);
         }
         existProduct.updateInfo(
             product.getName(), 
@@ -67,7 +67,7 @@ public class ProductService implements ManageProductUseCase{
         Product existProduct = findbyID(id);
 
         if (!existProduct.getUserId().equals(userId)) {
-            throw new DomainException(BusinessErrorCode.ACCESS_DENEGATE);
+            throw new DomainException(BusinessErrorCode.ACCESS_DENIED);
         }
         productRepositoryPort.deleteById(id);
     }

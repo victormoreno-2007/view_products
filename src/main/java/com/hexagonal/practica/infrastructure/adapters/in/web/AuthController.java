@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class  AuthController {
 
     private final ManageUserUseCase manageUserUseCase;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
    private final Bucket bucket = Bucket.builder()
             .addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofMinutes(1))))
@@ -39,7 +41,7 @@ public class  AuthController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            if (!user.getPassword().equals(request.password())) {
+            if (!passwordEncoder.matches(request.password(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 

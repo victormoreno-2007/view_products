@@ -1,10 +1,13 @@
 package com.hexagonal.practica.infrastructure.security;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.hexagonal.practica.domain.model.user.User;
@@ -17,7 +20,9 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "EstaEsUnaClaveSecretaMuyLargaYSuperSeguraParaMiVitrinaDeProductos12345";
+    
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     public String generateToken(User user){
         Map<String, Object> extraClaims = new HashMap<>();
@@ -68,7 +73,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

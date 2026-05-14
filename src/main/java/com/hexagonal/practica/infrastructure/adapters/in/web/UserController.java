@@ -37,13 +37,13 @@ public class UserController {
         @RequestBody @Valid UserRequest request
     ) {
 
-        String contraseñaSegura = passwordEncoder.encode(request.getPassword());
+        String securePassword = passwordEncoder.encode(request.getPassword());
         User userInput =  User.reconstruct(
             null, 
             request.getFirstname(), 
             request.getLastName(), 
             request.getEmail(), 
-            contraseñaSegura, 
+            securePassword, 
             Role.USER
         );
 

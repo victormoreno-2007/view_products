@@ -30,9 +30,13 @@ public class GlobalExceptionHandler {
                 status = HttpStatus.NOT_FOUND;
                 break;
         
-            case EMAIL_INVELID:
+            case EMAIL_INVALID:
             case MESSAGE_NOT_EMPTY:
                 status = HttpStatus.BAD_REQUEST; 
+                break;
+
+            case ACCESS_DENIED:
+                status = HttpStatus.FORBIDDEN;
                 break;
                 
             case PASSWORD_INVALID:

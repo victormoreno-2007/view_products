@@ -18,7 +18,7 @@ public class User {
 
     public static User create(String email, String password, String firstName, String lastname, Role role){
         if (email == null || !email.contains("@")) {
-            throw new DomainException(BusinessErrorCode.EMAIL_INVELID);
+            throw new DomainException(BusinessErrorCode.EMAIL_INVALID);
         }
         if (password == null || password.trim().isEmpty()) {
             throw new DomainException(BusinessErrorCode.PASSWORD_INVALID);

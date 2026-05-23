@@ -19,8 +19,7 @@ public class CloudinaryStorageAdapter implements ImageStoragePort {
     @Override
     public String uploadImage(MultipartFile file) {
         try {
-            // Subimos el archivo y obtenemos la respuesta en un Map
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
             return uploadResult.get("secure_url").toString();
         } catch (IOException e) {
             throw new RuntimeException("Error al subir la imagen a Cloudinary", e);

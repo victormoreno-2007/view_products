@@ -16,6 +16,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
+import com.hexagonal.practica.infrastructure.security.JwtAuthenticationEntryPoint;
 import com.hexagonal.practica.infrastructure.security.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,6 +44,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/products/user/**").permitAll()
                 .anyRequest().authenticated() 
             )
+            .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthEntryPoint))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

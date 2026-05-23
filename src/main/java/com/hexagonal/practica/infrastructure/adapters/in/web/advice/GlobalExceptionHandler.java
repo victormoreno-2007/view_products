@@ -63,6 +63,7 @@ public class GlobalExceptionHandler {
         response.put("message", "Ocurrió un error inesperado, por favor contacte al administrador " );
 
         response.put("Error", "Internal Server Error");
+        response.put("Detalle", ex.getMessage());
 
         ex.printStackTrace();
 
